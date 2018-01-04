@@ -11,11 +11,8 @@ function draw() {
 	if (canvas.getContext) {
 		let scale = 350 / Math.pow(rt7, Math.max(order, 1));
 		let ctx = canvas.getContext('2d');
-		ctx.beginPath();
-		ctx.rect(0, 0, canvas.width, canvas.height);
-		ctx.fillStyle = "#000000";
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.lineWidth = 2;
-		ctx.fill();
 		let pattern = makePattern(order);
 		let initAngle = (2*Math.PI) + ((order * - Math.acos(5/(2*rt7))) % (2*Math.PI));
 		let ttl = new Turtle(ctx, 45, 120, initAngle, scale);
@@ -93,9 +90,26 @@ function setOrder(ord) {
 	draw();
 }
 </script>
+<style>
+body {
+    text-align: center;
+	background-color: #000;
+}
+#radioOrder {
+	margin: 10px;
+	color: #fff;
+}
+canvas {
+    position:absolute;
+    top: 50%;
+    left: 50%;
+	margin-top: -220px;
+    margin-left: -220px;
+}
+</style>
 </head>
 <body>
-<form>
+<form id="radioOrder">
 	<input type="radio" name="order" onclick="setOrder(1)"> 1 &nbsp;
 	<input type="radio" name="order" onclick="setOrder(2)"> 2 &nbsp;
 	<input type="radio" name="order" onclick="setOrder(3)" checked> 3 &nbsp;
