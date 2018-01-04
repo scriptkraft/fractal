@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script>
+const patA = "A-B--B+A++AA+B-", patB = "+A-BB--B-A++A+B", rt7 = Math.sqrt(7);
+var order = 3;
+window.onload = function() { draw(); }
+function draw() {
+	var canvas = document.getElementById('canvas');
+	if (canvas.getContext) {
+		let scale = 350 / Math.pow(rt7, Math.max(order, 1));
+		let ctx = canvas.getContext('2d');
+		ctx.beginPath();
+		ctx.rect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "#000000";
+		ctx.lineWidth = 2;
+		ctx.fill();
+		let pattern = makePattern(order);
+		let initAngle = (2*Math.PI) + ((order * - Math.acos(5/(2*rt7))) % (2*Math.PI));
+		let ttl = new Turtle(ctx, 45, 120, initAngle, scale);
+		let strokeColor = 0;
+		for (let i = 0; i < pattern.length; i++) {
+			let sc = Math.floor(strokeColor).toString(16);
+			sc = (sc.length == 1) ? "0"+sc : sc;
+			ctx.strokeStyle="#"+sc+"FF00";
+			let c = pattern.charAt(i);
+			switch(c) {
+				case 'A':
+				case 'B':
+					ttl.fwd();
+					strokeColor += 125 / Math.pow(6, order);
+					break;
+				case '+':
+					ttl.lt();
+					break;
+				case '-':
+					ttl.rt();
+					break;
+			}
+		}
+	}
+}
+function makePattern(degree) {
+	let pattern = "A";
+	for (let di = 0; di < degree; di++) {
+		let newPat = "";
+		for (let i = 0; i < pattern.length; i++) {
+			let c = pattern.charAt(i);
+			switch(c) {
+				case 'A':
+					newPat += patA;
+					break;
+				case 'B':
+					newPat += patB;
+					break;
+				default:
+					newPat += c;
+			}
+		}
+		pattern = newPat;
+	}
+	return pattern;
+}
+class Turtle {
+	constructor(ctx, tx, ty, ta, scale) {
+		this.ctx = ctx;
+		this.tx = tx;
+		this.ty = ty;
+		this.ta = ta;
+		this.scale = scale;
+	}
+	fwd(len = this.scale) {
+		let ctx = this.ctx;
+		ctx.beginPath();
+		ctx.moveTo(this.tx, this.ty);
+		this.tx += len * Math.cos(this.ta);
+		this.ty += len * Math.sin(this.ta);
+		ctx.lineTo(this.tx, this.ty);
+		ctx.stroke();
+	}
+	lt() {
+		this.ta = (this.ta + 5*Math.PI/3) % (2*Math.PI);
+	}
+	
+	rt() {
+		this.ta = (this.ta + Math.PI/3) % (2*Math.PI);
+	}
+}
+function setOrder(ord) {
+	if (ord == order) return;
+	order = ord;
+	draw();
+}
+</script>
+</head>
+<body>
+<form>
+	<input type="radio" name="order" onclick="setOrder(1)"> 1 &nbsp;
+	<input type="radio" name="order" onclick="setOrder(2)"> 2 &nbsp;
+	<input type="radio" name="order" onclick="setOrder(3)" checked> 3 &nbsp;
+	<input type="radio" name="order" onclick="setOrder(4)"> 4 &nbsp;
+	<input type="radio" name="order" onclick="setOrder(5)"> 5 &nbsp;
+	<input type="radio" name="order" onclick="setOrder(6)"> 6 &nbsp;
+</form>
+<canvas width="440" height="440" id="canvas"/>
+</body>
+</html>
